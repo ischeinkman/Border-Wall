@@ -6,11 +6,9 @@ from Crypto import Random
 from Crypto.Cipher import AES
 
 import whitelister
+from config import Config
 
-password = ''
-key = b''
-
-def decrypt(msg):
+def decrypt(key, msg):
 	salt = Random.new().read(16)
 	cipher = AES.new(key, AES.MODE_CFB, salt)
 	dehexed = msg.decode('hex')
@@ -24,8 +22,12 @@ def getIp():
     s.close()
     return ip
 
-def runserver(port):
+def runserver(cfg):
     
+    port = cfg.port
+    passwrod = cfg.password
+    key = cfg.key
+
     print('Creating socket')
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -46,7 +48,7 @@ def runserver(port):
         except:
             continue
 	conn.close()
-	dmsg = decrypt(msg)
+	dmsg = decrypt(key, msg)
 	print('MSG: '+dmsg)
 	arglist = [x for x in dmsg.split(';') if x!='']
 	if arglist[1] != password:
@@ -56,6 +58,8 @@ def runserver(port):
                 if len(arglist) >= 3:
 			srcip = arglist[2]
                 userid = arglist[0]
+                if len(cfg.validusers) > 0 and not userid in cfg.validusers:
+                    continue
 		ipsToUsers[userid] = srcip
 		print(str(ipsToUsers))
 		whitelister.reset()
@@ -66,9 +70,10 @@ if __name__ == '__main__':
     whitelister.reset()
     whitelister.done()
 
+    cfg = Config()
     if len(sys.argv) > 2:
         sys.exit(0)
     if len(sys.argv) == 2:
-        runserver(int(sys.argv[1]))
+        cfg.port = int(sys.argv[1])
     else:
-        runserver(44445)		
+        runserver(cfg)		

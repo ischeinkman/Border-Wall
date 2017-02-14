@@ -1,0 +1,6 @@
+validusers = u1, testuser
+defaultuser = testuser
+password = testpass
+key = testkey
+ip = 127.0.0.1
+port = 44444
