@@ -1,12 +1,19 @@
+from Crypto.Hash import SHA256
+
 def _parseFile(name):
     cfg = open(name, 'r')
     paramList = [x.replace(' ','') for x in cfg.read().split('\n') if len(x) > 0]
-    print(str(paramList))
     prmMap = {}
     for prm in paramList:
         key, value = prm.split('=')
         prmMap[key] = value
     return prmMap
+
+def _hashKey(keystr):
+    h = SHA256.new()
+    h.update(keystr.encode('ascii'))
+    hsh = str(bytearray.fromhex(h.hexdigest()))
+    return hsh
 
 class Config:
 
@@ -16,7 +23,7 @@ class Config:
     def setUp(self, fileName):
         prmMap = _parseFile(fileName)
         self.password = prmMap['password']
-        self.key = prmMap['key'].encode('ascii') 
+        self.key = _hashKey(prmMap['key'])
         self.ip = prmMap['ip']
         self.port = int(prmMap['port'])
         

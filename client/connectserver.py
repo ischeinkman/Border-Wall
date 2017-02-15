@@ -7,14 +7,14 @@ from Crypto.Cipher import AES
 from Crypto import Random
 from config import Config
 
-def createMsg(user, ip = None):
+def createMsg(cfg, user, ip = None):
     
     ipstring = ''
     if ip != None:
         ipstring = ';'+ip
 
     salt = Random.new().read(16)
-    cipher = AES.new(key, AES.MODE_CFB, salt)
+    cipher = AES.new(cfg.key, AES.MODE_CFB, salt)
     encodedmsg = (salt + cipher.encrypt(user+';'+cfg.password+ipstring)).encode('hex')
     
     return encodedmsg
@@ -25,7 +25,7 @@ def authenticate(cfg, user, srcip = None):
     print('Connecting...')
     sock.connect((cfg.ip, cfg.port))
     print('Sending...')
-    sock.send(createMsg(user, srcip))
+    sock.send(createMsg(cfg, user, srcip))
     print('Sent.')
     sock.close()
 
