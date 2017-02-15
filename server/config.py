@@ -1,4 +1,5 @@
 from Crypto.Hash import SHA256
+from time import gmtime, strftime
 
 def _parseFile(name):
     cfg = open(name, 'r')
@@ -10,8 +11,9 @@ def _parseFile(name):
     return prmMap
 
 def _hashKey(keystr):
+    timesalt = strftime('%Y%j%H%M%S', gmtime())[:-1]
     h = SHA256.new()
-    h.update(keystr.encode('ascii'))
+    h.update(keystr.encode('ascii') + timesalt)
     hsh = str(bytearray.fromhex(h.hexdigest()))
     return hsh
 
