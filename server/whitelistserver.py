@@ -25,7 +25,7 @@ def getIp():
 def runserver(cfg):
     
     port = cfg.port
-    passwrod = cfg.password
+    password = cfg.password
     key = cfg.key
 
     print('Creating socket')
