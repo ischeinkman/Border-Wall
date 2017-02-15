@@ -26,7 +26,6 @@ def runserver(cfg):
     
     port = cfg.port
     password = cfg.password
-    key = cfg.key
 
     print('Creating socket')
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -48,10 +47,12 @@ def runserver(cfg):
         except:
             continue
 	conn.close()
-	dmsg = decrypt(key, msg)
+	dmsg = decrypt(cfg.key, msg)
 	print('MSG: '+dmsg)
 	arglist = [x for x in dmsg.split(';') if x!='']
-	if arglist[1] != password:
+        if len(arglist) < 2:
+            print('WRONG KEY')
+        elif arglist[1] != password:
 		print('WRONG PASS')
 	else:
 		srcip = addr[0]

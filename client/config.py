@@ -25,7 +25,7 @@ class Config:
     def setUp(self, fileName):
         prmMap = _parseFile(fileName)
         self.password = prmMap['password']
-        self.key = _hashKey(prmMap['key'])
+        self._key = (prmMap['key'])
         self.ip = prmMap['ip']
         self.port = int(prmMap['port'])
         
@@ -33,4 +33,9 @@ class Config:
             self.defaultuser = prmMap['defaultuser']
         if 'validusers' in prmMap:
             self.validusers = prmMap['validusers'].split(',')
-        
+
+    def __getattr__(self, name):
+        if name == 'key':
+            return _hashKey(self._key)
+        else:
+            return getattr(self, name)
