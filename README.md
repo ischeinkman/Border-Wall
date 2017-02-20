@@ -1,5 +1,5 @@
-# Serverr-Wall
-Secure your borders from hostile foreign entities.
+# Server-Wall
+Secure your servers from hostile foreign entities.
 
 #About
 Server-Wall uses iptables to protect your server from bad actors on LAN. Without the password, key, and a valid user name,
