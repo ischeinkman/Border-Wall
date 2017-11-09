@@ -30,7 +30,15 @@ def authenticate(cfg, user, srcip = None):
     sock.close()
 
 def main():
-    cfg = Config()
+    try:
+        cfg = Config(sys.argv[sys.argv.index('-c') + 1])
+    except ValueError:
+        cfg = Config()
+    except IOError as e:
+        print("Got IOError parsing config.")
+        print(e)
+        print("Using default ...")
+        cfg = Config()
     try:
         srcindex = sys.argv.index('-s')
         srcip = sys.argv[srcindex+1]
